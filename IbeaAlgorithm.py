@@ -94,108 +94,95 @@ class IbeaAlgorithm():
               
               
     
-    def calculateIndicatorMatrix(self):
+  def calculateIndicatorMatrix(self):
         max = [0,0,0,0]
         number_individuals = len(self.Population)
         self.indicatorMatrix = [[0 for i in range(number_individuals)] for j in range(number_individuals)]
         for j in range(number_individuals):
-            for i in range(j,number_individuals):
-                for k in range(self.NbObjectives):
-              
-
-        
-         
-
-        
-         
-   
-                    
-    
-                    
-              
-
-
-              
-              
-  def tounament(self):
-        compteur = 0
-        while(compteur < self.NbInd):
-              AddList = []
-              for i in range(2):
-                    if len(self.front) > 0:
-                          indicefront = random.randrange(0,len(self.front))
+              for i in range(j,number_individuals):
+                    max[0] = self.Population[i].Obj1 - self.Population[j].Obj1
+                    max[1] = self.Population[i].obj2 - self.Population[j].Obj2
+                    max[2] = self.Population[j].Obj1 - self.Population[i].Obj1
+                    max[3] = self.Population[j].obj2 - self.Population[i].Obj2
+                    if max[0] > max[1]:
+                          self.indicatorMatrix[i][j] = max[0]
                     else:
-                          indicefront = 0
-                    indicesolution = random.randrange(0, len(self.front[indicefront]))
-                    randomIndividual = self.front[indicefront][indicesolution]
-                    AddList.append(randomIndividual)
-                    
-             
+                          self.indicatorMatrix[i][j] = max[1]
+                    if max[2] > max[3]:
+                        self.indicatorMatrix[i][j] = max[2]
+                    else:
+                        self.indicatorMatrix[i][j] = max[3]
+                        
+                        
+def calculateFitnessPopulation(self):
+      NumberIndividual = len(self.Population)
+      for i in range(NumberIndividual):
+            self.Population[i].fitnessValue = sum(self.indicatorMatrix[:][i])   + 1  
 
-              AddList.sort(key = lambda x: x.rank) 
-              if AddList[0].rank == AddList[1].rank and AddList[1].crowdingdistance > AddList[0].crowdingdistance:
-                    self.Sample.append(AddList[0])
-              else:
-                    self.Sample.append(AddList[0])
-              compteur+=1
-              
-              
-  def crossOverMutation(self):
-        ind_Parent1 = random.randrange(0,self.NbInd)
-        ind_Parent2 = random.randrange(0,self.NbInd)
-        ind_crossover = random.randrange(0,self.NbVariable); 
-        children1 = Solution(self.NbVariable,self.NbConstraint,self.constraint)
-        children2 = Solution(self.NbVariable,self.NbConstraint,self.constraint)
-        children1.solution = [0 for i in range(self.NbVariable)]
-        children2.solution = [0 for i in range(self.NbVariable)]
-        for i in range(ind_crossover):
-              children1.solution[i] = self.Sample[ind_Parent1].solution[i]
-              children2.solution[i] = self.Sample[ind_Parent2].solution[i]
-        for j in range(ind_crossover, self.NbVariable):
+def environnmentalSelection(self):
+      global countgen 
+      self.Population.sort(key = lambda x: x.fitnessValue)
+      self.Population = self.Popution[0:self.Nbpop] 
+      countgen +=1
+      
 
-              children1.solution[j] = self.Sample[ind_Parent2].solution[j]
-              children2.solution[j] = self.Sample[ind_Parent1].solution[j]
+def binaryTounament(self):
+      compteur = 0
+      while(compteur < self.NbInd):
+            AddList = []
+            for i in range(2):
+                  indicesolution = random.randrange(0, self.NbPop)
+                  AddList.append[self.Population[i]]
+            AddList.sort(key = lambda x: x.fitnessValue) 
+            self.Sample.append(AddList[0])
+            compteur +=1 
+
+                  
+
+                  
+       
               
-        Getmuted = random.randrange(3)
-        print("choixmutation: ", Getmuted)
-        if Getmuted > 0:
-              children1.addmutation()
-              children2.addmutation()
-              children1.sumconstraint(self.MatrixConstraint)
-              children2.sumconstraint(self.MatrixConstraint)
-              children1.checkandrepaire(0)
-              children2.checkandrepaire(0)
-              if children1.admissible == True:
-                    self.Sample[ind_Parent1] = children1
-                    self.Sample[ind_Parent1].calculatefitnessvalue(self.PriceVariable)
-              if children2.admissible == True:
-                    self.Sample[ind_Parent2] = children2
-                    self.Sample[ind_Parent2].calculatefitnessvalue(self.PriceVariable)
-              else:
-                    self.Sample[ind_Parent2] = self.Sample[ind_Parent2]
+def crossOverMutation(self):
+      ind_Parent1 = random.randrange(0,self.NbInd)
+      ind_Parent2 = random.randrange(0,self.NbInd)
+      ind_crossover = random.randrange(0,self.NbVariable) 
+      children1 = Solution(self.NbVariable,self.NbConstraint,self.constraint)
+      children2 = Solution(self.NbVariable,self.NbConstraint,self.constraint)
+      children1.solution = [0 for i in range(self.NbVariable)]
+      children2.solution = [0 for i in range(self.NbVariable)]
+      for i in range(ind_crossover):
+            children1.solution[i] = self.Sample[ind_Parent1].solution[i]
+            children2.solution[i] = self.Sample[ind_Parent2].solution[i]
+      for j in range(ind_crossover, self.NbVariable):
+            children1.solution[j] = self.Sample[ind_Parent2].solution[j]
+            children2.solution[j] = self.Sample[ind_Parent1].solution[j]
+      Getmuted = random.randrange(3)
+      print("choixmutation: ", Getmuted)
+      if Getmuted > 0:
+            children1.addmutation()
+            children2.addmutation()
+            children1.sumconstraint(self.MatrixConstraint)
+            children2.sumconstraint(self.MatrixConstraint)
+            children1.checkandrepaire(0)
+            children2.checkandrepaire(0)
+            if children1.admissible == True:
+                  self.Sample[ind_Parent1] = children1
+                  self.Sample[ind_Parent1].calculatefitnessvalue(self.PriceVariable)
+            if children2.admissible == True:
+                  self.Sample[ind_Parent2] = children2
+                  self.Sample[ind_Parent2].calculatefitnessvalue(self.PriceVariable)
+            else:
+                  self.Sample[ind_Parent2] = self.Sample[ind_Parent2]
                     
   
   
   
-  def UpdatePopulation(self):
-        compteur = 0 
-        arret = False 
-        self.List = [self.Population[i] for i in range(self.NbPop)]
-        for i in range(self.NbInd):
-              self.List.append(self.Sample[i])
-        self.rankList()
-        self.frontList()
-        self.measurecrowdingdistance()
-        self.Population = []
-        for i in range(len(self.front)):
-              if arret == True:
-                    break 
-              for j in range(len(self.front[i])):
-                    self.Population.append(self.front[i][j])
-                    compteur =+ 1 
-                    if compteur == self.NbPop:
-                          arret = True
-                          break
+def UpdatePopulation(self):
+      self.List = [self.Population[i] for i in range(self.NbPop)]
+      for i in range(self.NbInd):
+            self.List.append(self.Sample[i])
+      self.Population = self.List
+  
                     
               
               
@@ -204,26 +191,19 @@ class IbeaAlgorithm():
 
   
         
-  def resolve(self, Nbgen):
-        self.initPopulation()
-        self.computeExtremePoint()
-        self.displayPopulation()
-        for i in range(Nbgen):
-              self.displayPopulation()     
-
-              self.rankPopulation()
-              self.displayPopulation()     
-
-              self.definePopulationfront()
-     
-              self.measurecrowdingdistance()
-              self.tounament()              
-              NbMutation = random.randrange(self.NbInd)
-              self.displaySample()
-              for j in range(NbMutation):
-                    self.crossOverMutation()
-              self.UpdatePopulation()
-        self.displayPopulation()     
+def resolve(self, Nbgen):
+      countgen = 0
+      self.initPopulation()
+      while countgen < Nbgen:
+            self.calculateIndicatorMatrix()
+            self.calculateFitnessPopulation()
+            self.environnmentalSelection()
+            if countgen > Nbgen - 1:
+                  break
+            self.binarytournament()  
+            self.crossOverMutation()
+            self.UpdatePopulation()
+      self.displayPopulation()     
 
 
 
